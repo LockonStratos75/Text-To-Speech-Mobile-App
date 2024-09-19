@@ -11,7 +11,25 @@ export const getAvailableVoices = async () => {
 
     try {
         const response = await axios.get(url);
-        return response.data.voices; // returns an array of voices
+        const allVoices = response.data.voices;
+
+        // Define the criteria for filtering
+        const filteredVoices = allVoices.filter(voice => {
+            // Check if the voice supports English
+            const isEnglish = voice.languageCodes.some(code => code.startsWith('en'));
+
+            // Define keywords to match in the voice name or other properties
+            const allowedKeywords = ['NEWS', 'standard', 'Wavenet', 'journey'];
+
+            // Check if the voice name includes any of the allowed keywords
+            const matchesKeyword = allowedKeywords.some(keyword =>
+                voice.name.toLowerCase().includes(keyword.toLowerCase())
+            );
+
+            return isEnglish && matchesKeyword;
+        });
+
+        return filteredVoices; // returns the filtered array of voices
     } catch (error) {
         console.error('Error fetching available voices:', error.response ? error.response.data : error.message);
         throw error;
