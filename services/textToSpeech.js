@@ -3,7 +3,9 @@
 import axios from 'axios';
 import { GOOGLE_CLOUD_API_KEY } from '@env';
 
-// Function to fetch available voices
+/**
+ * Fetch available voices from Google Cloud Text-to-Speech API
+ */
 export const getAvailableVoices = async () => {
     const url = `https://texttospeech.googleapis.com/v1/voices?key=${GOOGLE_CLOUD_API_KEY}`;
 
@@ -16,7 +18,14 @@ export const getAvailableVoices = async () => {
     }
 };
 
-export const getSpeech = async (text, selectedVoice) => {
+/**
+ * Synthesize speech using Google Cloud Text-to-Speech API
+ * @param {string} text - The text to synthesize
+ * @param {string} selectedVoice - The name of the selected voice
+ * @param {string} audioEncoding - The desired audio encoding format
+ * @returns {string} - Base64-encoded audio content
+ */
+export const getSpeech = async (text, selectedVoice, audioEncoding = 'LINEAR16') => {
     const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_CLOUD_API_KEY}`;
 
     const data = {
@@ -27,7 +36,7 @@ export const getSpeech = async (text, selectedVoice) => {
             ssmlGender: 'NEUTRAL', // Optional, can be set based on the selected voice gender
         },
         audioConfig: {
-            audioEncoding: 'MP3',
+            audioEncoding: audioEncoding, // Use the specified encoding
         },
     };
 
