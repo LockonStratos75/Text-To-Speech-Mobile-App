@@ -20,6 +20,7 @@ export const getAvailableVoices = async () => {
 
             // Define keywords to match in the voice name or other properties
             const allowedKeywords = ['NEWS', 'standard', 'Wavenet', 'journey'];
+            // const allowedKeywords = ['journey'];
 
             // Check if the voice name includes any of the allowed keywords
             const matchesKeyword = allowedKeywords.some(keyword =>

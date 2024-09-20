@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, ActivityIndicator, Alert, Text } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Ensure this is installed via `expo install @react-native-picker/picker`
+import CustomPicker from './CustomPicker'; // Import the custom picker
 import { getSpeech, getAvailableVoices } from '../services/textToSpeech';
 import { Audio } from 'expo-av';
 
@@ -66,6 +66,18 @@ const TextToSpeech = () => {
         }
     };
 
+    // Prepare items for the voice picker
+    const voiceItems = voices.map((voice) => ({
+        label: `${voice.name} (${voice.ssmlGender})`,
+        value: voice.name,
+    }));
+
+    // Prepare items for the audio encoding picker
+    const encodingItems = [
+        { label: 'LINEAR16 (WAV)', value: 'LINEAR16' },
+        { label: 'MULAW', value: 'MULAW' },
+    ];
+
     return (
         <View style={styles.container}>
             <TextInput
@@ -76,30 +88,19 @@ const TextToSpeech = () => {
                 onChangeText={setText}
             />
 
-            <Text style={styles.label}>Select Voice:</Text>
-            <Picker
+            <CustomPicker
+                label="Select Voice:"
                 selectedValue={selectedVoice}
-                onValueChange={(itemValue) => setSelectedVoice(itemValue)}
-                style={styles.picker}
-            >
-                {voices.map((voice) => (
-                    <Picker.Item
-                        key={voice.name}
-                        label={`${voice.name} (${voice.ssmlGender})`}
-                        value={voice.name}
-                    />
-                ))}
-            </Picker>
+                onValueChange={setSelectedVoice}
+                items={voiceItems}
+            />
 
-            <Text style={styles.label}>Select Audio Encoding:</Text>
-            <Picker
+            <CustomPicker
+                label="Select Audio Encoding:"
                 selectedValue={audioEncoding}
-                onValueChange={(itemValue) => setAudioEncoding(itemValue)}
-                style={styles.picker}
-            >
-                <Picker.Item label="LINEAR16 (WAV)" value="LINEAR16" />
-                <Picker.Item label="MULAW" value="MULAW" />
-            </Picker>
+                onValueChange={setAudioEncoding}
+                items={encodingItems}
+            />
 
             <Button
                 title={loading ? 'Processing...' : 'Convert to Speech'}
@@ -126,15 +127,6 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 20,
         textAlignVertical: 'top',
-    },
-    picker: {
-        height: 50,
-        width: '100%',
-        marginBottom: 20,
-    },
-    label: {
-        marginBottom: 5,
-        fontWeight: 'bold',
     },
 });
 
